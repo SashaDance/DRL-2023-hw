@@ -3,10 +3,9 @@ import numpy as np
 import random
 import time
 
-env = gym.make('maze-sample-5x5-v0')
-state_n = 25
-action_n = 4
-
+env = gym.make('Taxi-v3')
+state_n = 500
+action_n = 6
 
 class RandomAgent():
     def __init__(self, action_n):
@@ -45,15 +44,11 @@ class CrossEntropyAgent:
         return None
 
 
-def get_state(obs):
-    return int(np.sqrt(state_n) * obs[0] + obs[1])
-
-
 def get_trajectory(env, agent, max_len=1000, visualize=False):
     trajectory = {'states': [], 'actions': [], 'rewards': []}
 
     obs = env.reset()
-    state = get_state(obs)
+    state = obs
 
     for _ in range(max_len):
         trajectory['states'].append(state)
@@ -64,7 +59,7 @@ def get_trajectory(env, agent, max_len=1000, visualize=False):
         obs, reward, done, _ = env.step(action)
         trajectory['rewards'].append(reward)
 
-        state = get_state(obs)
+        state = obs
 
         if visualize:
             time.sleep(0.5)
@@ -75,11 +70,10 @@ def get_trajectory(env, agent, max_len=1000, visualize=False):
 
     return trajectory
 
-
 agent = CrossEntropyAgent(state_n, action_n)
-q_param = 0.9
+q_param = 0.7
 iteration_n = 20
-trajectory_n = 50
+trajectory_n = 500
 
 for iteration in range(iteration_n):
 
@@ -99,3 +93,8 @@ for iteration in range(iteration_n):
             elite_trajectories.append(trajectory)
 
     agent.fit(elite_trajectories)
+
+trajectory = get_trajectory(env, agent, max_len=1000000, visualize=True)
+print('total reward:', sum(trajectory['rewards']))
+print('model:')
+print(agent.model)
