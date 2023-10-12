@@ -75,12 +75,10 @@ def get_trajectory(env, agent, max_len=1000, visualize=False):
 
 
 agent = CrossEntropyAgent(state_n, action_n)
-param_dict = {}
 
-
-for q_param in [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]:
-    for iteration_n in [50, 100, 150, 200, 250]:
-        for trajectory_n in [500, 1000, 1500, 2000, 2500]:
+for q_param in [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]:
+    for iteration_n in [150]:
+        for trajectory_n in [1500]:
 
             '''
             this cycle is for eliminating too bad models:
@@ -106,7 +104,6 @@ for q_param in [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]:
 
                     mean_total_reward = np.mean(total_rewards)
 
-
                     # policy improvement
                     quantile = np.quantile(total_rewards, q_param)
                     elite_trajectories = []
@@ -128,8 +125,9 @@ for q_param in [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]:
                 trajectory = get_trajectory(env, agent, max_len=200)
                 sum_ += sum(trajectory['rewards'])
 
-            print(sum_ / n)
-            param_dict[(q_param, iteration_n, trajectory_n)] = sum_
+            sum_ = sum_ / n
+            print(sum_)
 
-with open('param_dict.pickle', 'wb') as f:
-    pickle.dump(param_dict, f)
+            with open('hyper_params.txt', 'a') as f:
+                f.write(f'{q_param} {iteration_n} {trajectory_n} {sum_}\n')
+

@@ -11,15 +11,6 @@ state_n = 500
 action_n = 6
 
 
-class RandomAgent():
-    def __init__(self, action_n):
-        self.action_n = action_n
-
-    def get_action(self, state):
-        action = np.random.randint(self.action_n)
-        return action
-
-
 class CrossEntropyAgent:
     def __init__(self, state_n, action_n, lamda=0.1,
                  policy_smoothing=True, alpha=0.2):
@@ -90,9 +81,9 @@ agent = CrossEntropyAgent(state_n, action_n)
 
 mean_total_reward = 0
 
-q_param = 0.2
-iteration_n = 150
-trajectory_n = 500
+q_param = 0.4
+iteration_n = 500
+trajectory_n = 1500
 
 
 for iteration in range(iteration_n):
@@ -120,7 +111,7 @@ sum_ = 0
 n = 500
 
 for j in range(n):
-    trajectory = get_trajectory(env, agent, max_len=200)
+    trajectory = get_trajectory(env, agent, max_len=200, visualize=True)
     sum_ += sum(trajectory['rewards'])
 
 print(sum_ / n)
